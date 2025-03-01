@@ -11,6 +11,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { ProtectedRoute } from "./lib/protected-route";
 import { useAuth } from "@/hooks/use-auth";
 import ProductsPage from "@/pages/admin/products";
+import UsersPage from "@/pages/admin/users";
 
 function DashboardWrapper() {
   const { user } = useAuth();
@@ -43,6 +44,14 @@ function Router() {
         component={() => (
           <Layout>
             <ProductsPage />
+          </Layout>
+        )}
+      />
+      <ProtectedRoute
+        path="/users"
+        component={() => (
+          <Layout>
+            <UsersPage />
           </Layout>
         )}
       />

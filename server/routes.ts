@@ -6,6 +6,14 @@ import { storage } from "./storage";
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
+  app.get("/api/users", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.role !== "admin") {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+    const users = await storage.getUsers();
+    res.json(users);
+  });
+
   // Development helper route to initialize test data
   app.post("/api/dev/init", async (req, res) => {
     // Create two stores

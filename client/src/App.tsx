@@ -12,6 +12,7 @@ import { ProtectedRoute } from "./lib/protected-route";
 import { useAuth } from "@/hooks/use-auth";
 import ProductsPage from "@/pages/admin/products";
 import UsersPage from "@/pages/admin/users";
+import StockPage from "@/pages/admin/stock";
 
 function DashboardWrapper() {
   const { user } = useAuth();
@@ -52,6 +53,14 @@ function Router() {
         component={() => (
           <Layout>
             <UsersPage />
+          </Layout>
+        )}
+      />
+      <ProtectedRoute
+        path="/stock"
+        component={() => (
+          <Layout>
+            <StockPage />
           </Layout>
         )}
       />

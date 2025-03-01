@@ -93,7 +93,7 @@ function RegisterForm() {
     defaultValues: {
       username: "",
       password: "",
-      role: "admin",
+      role: "admin" as const,
       storeId: null,
     },
   });
@@ -136,7 +136,10 @@ function RegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Role</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={(value: "admin" | "shopkeeper") => field.onChange(value)}
+                defaultValue="admin"
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a role" />

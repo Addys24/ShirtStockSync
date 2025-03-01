@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth } from "./auth";
 import { storage } from "./storage";
+import { hashPassword } from "./auth"; // Assuming hashPassword function exists
 
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
@@ -132,6 +133,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.patch("/api/transfers/:id/complete", async (req, res) => {
     const transfer = await storage.completeTransfer(parseInt(req.params.id));
     res.json(transfer);
+  });
+
+  app.post("/api/users", async (req, res) => {
+    if (!req.isAuthenticated() || req.user.role !== "admin") {
+      return res.status(403).json({ message: "Only admins can create admin users" });
+    }
+
+    try {
+      const existingUser = await storage.getUserByUsername(req.body.username);
+      if (existingUser) {
+        return res.status(400).json({ message: "Username already exists" });
+      }
+
+      const hashedPassword = await hashPassword(req.body.password);
+      const user = await storage.createUser({
+        ...req.body,
+        password: hashedPassword,
+      });
+
+      res.status(201).json(user);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to create user" });
+    }
   });
 
   const httpServer = createServer(app);

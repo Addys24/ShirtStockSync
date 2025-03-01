@@ -6,6 +6,60 @@ import { storage } from "./storage";
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
+  // Development helper route to initialize test data
+  app.post("/api/dev/init", async (req, res) => {
+    // Create two stores
+    const storeA = await storage.createStore({
+      name: "Branch A",
+      location: "Downtown"
+    });
+
+    const storeB = await storage.createStore({
+      name: "Branch B",
+      location: "Uptown"
+    });
+
+    // Create some products
+    const products = await Promise.all([
+      storage.createProduct({
+        name: "Classic T-Shirt",
+        size: 32,
+        color: "Light Blue"
+      }),
+      storage.createProduct({
+        name: "Classic T-Shirt",
+        size: 36,
+        color: "Dark Pink"
+      }),
+      storage.createProduct({
+        name: "Premium T-Shirt",
+        size: 40,
+        color: "Plain White"
+      })
+    ]);
+
+    // Add initial stock
+    await Promise.all([
+      storage.createStock({
+        productId: products[0].id,
+        storeId: storeA.id,
+        quantity: 50
+      }),
+      storage.createStock({
+        productId: products[1].id,
+        storeId: storeA.id,
+        quantity: 30
+      }),
+      storage.createStock({
+        productId: products[2].id,
+        storeId: storeB.id,
+        quantity: 25
+      })
+    ]);
+
+    res.json({ message: "Test data initialized" });
+  });
+
   // Products
   app.get("/api/products", async (req, res) => {
     const products = await storage.getProducts();

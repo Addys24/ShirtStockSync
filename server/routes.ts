@@ -71,6 +71,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(201).json(product);
   });
 
+  // Add delete endpoint for products
+  app.delete("/api/products/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    await storage.deleteProduct(id);
+    res.sendStatus(200);
+  });
+
   // Stores
   app.get("/api/stores", async (req, res) => {
     const stores = await storage.getStores();

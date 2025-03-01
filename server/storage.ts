@@ -17,27 +17,28 @@ const MemoryStore = createMemoryStore(session);
 
 export interface IStorage {
   sessionStore: session.Store;
-  
+
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   // Store operations
   getStores(): Promise<Store[]>;
   getStore(id: number): Promise<Store | undefined>;
   createStore(store: InsertStore): Promise<Store>;
-  
+
   // Product operations
   getProducts(): Promise<Product[]>;
   getProduct(id: number): Promise<Product | undefined>;
   createProduct(product: InsertProduct): Promise<Product>;
-  
+  deleteProduct(id: number): Promise<void>; // Added deleteProduct method
+
   // Stock operations
   getStockByStore(storeId: number): Promise<(Stock & { product: Product })[]>;
   updateStock(id: number, quantity: number): Promise<Stock>;
   createStock(stock: InsertStock): Promise<Stock>;
-  
+
   // Transfer operations
   createTransfer(transfer: InsertTransfer): Promise<Transfer>;
   getTransfersByStore(storeId: number): Promise<Transfer[]>;
@@ -160,6 +161,15 @@ export class MemStorage implements IStorage {
     const updated = { ...transfer, status: "completed" as const };
     this.transfers.set(id, updated);
     return updated;
+  }
+
+  async deleteProduct(id: number): Promise<void> {
+    this.products.delete(id);
+    for (const [stockId, stock] of this.stock.entries()) {
+      if (stock.productId === id) {
+        this.stock.delete(stockId);
+      }
+    }
   }
 }
 

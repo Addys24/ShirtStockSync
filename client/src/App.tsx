@@ -10,6 +10,7 @@ import ShopkeeperDashboard from "@/pages/shopkeeper/dashboard";
 import { Sidebar } from "@/components/layout/sidebar";
 import { ProtectedRoute } from "./lib/protected-route";
 import { useAuth } from "@/hooks/use-auth";
+import ProductsPage from "@/pages/admin/products";
 
 function DashboardWrapper() {
   const { user } = useAuth();
@@ -34,6 +35,14 @@ function Router() {
         component={() => (
           <Layout>
             <DashboardWrapper />
+          </Layout>
+        )}
+      />
+      <ProtectedRoute
+        path="/products"
+        component={() => (
+          <Layout>
+            <ProductsPage />
           </Layout>
         )}
       />

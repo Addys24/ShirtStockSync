@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import {
   Form,
   FormControl,
@@ -30,55 +29,6 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2 } from "lucide-react";
-
-export default function AuthPage() {
-  const { user, loginMutation, registerMutation } = useAuth();
-  const [, setLocation] = useLocation();
-
-  if (user) {
-    setLocation("/");
-    return null;
-  }
-
-  return (
-    <div className="min-h-screen grid md:grid-cols-2">
-      <div className="flex items-center justify-center p-8">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle>Inventory Management</CardTitle>
-            <CardDescription>Sign in to manage your inventory</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="login">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="register">Register</TabsTrigger>
-              </TabsList>
-              <TabsContent value="login">
-                <LoginForm />
-              </TabsContent>
-              <TabsContent value="register">
-                <RegisterForm />
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="hidden md:flex bg-slate-100 items-center justify-center p-8">
-        <div className="max-w-md text-center">
-          <h2 className="text-3xl font-bold mb-4 text-slate-900">
-            Welcome to Inventory Management
-          </h2>
-          <p className="text-slate-600">
-            Efficiently manage your clothing inventory across multiple stores.
-            Track stock levels, process transfers, and maintain accurate records
-            with our intuitive management system.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function LoginForm() {
   const { loginMutation } = useAuth();
@@ -143,7 +93,7 @@ function RegisterForm() {
     defaultValues: {
       username: "",
       password: "",
-      role: "admin", // Changed default role to admin
+      role: "admin",
       storeId: null,
     },
   });
@@ -213,5 +163,54 @@ function RegisterForm() {
         </Button>
       </form>
     </Form>
+  );
+}
+
+export default function AuthPage() {
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
+
+  if (user) {
+    setLocation("/");
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen grid md:grid-cols-2">
+      <div className="flex items-center justify-center p-8">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Inventory Management</CardTitle>
+            <CardDescription>Sign in to manage your inventory</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="login">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
+              </TabsList>
+              <TabsContent value="login">
+                <LoginForm />
+              </TabsContent>
+              <TabsContent value="register">
+                <RegisterForm />
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
+      <div className="hidden md:flex bg-slate-100 items-center justify-center p-8">
+        <div className="max-w-md text-center">
+          <h2 className="text-3xl font-bold mb-4 text-slate-900">
+            Welcome to Inventory Management
+          </h2>
+          <p className="text-slate-600">
+            Efficiently manage your clothing inventory across multiple stores.
+            Track stock levels, process transfers, and maintain accurate records
+            with our intuitive management system.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
